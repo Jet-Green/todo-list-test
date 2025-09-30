@@ -1,0 +1,31 @@
+<script setup lang="ts">
+import type { Task } from '~/types/task.interface';
+
+
+const props = defineProps<{
+  task: Task
+}>()
+
+const emit = defineEmits(["delete-task"])
+
+let task = props.task;
+
+function deleteTask() {
+  emit("delete-task", task.id)
+}
+
+</script>
+<template>
+  <v-card variant="tonal">
+    <v-card-title>
+      {{ task.title }}
+    </v-card-title>
+    <v-card-text>
+      {{ task.notes }}
+    </v-card-text>
+
+    <v-card-actions>
+      <v-btn @click="deleteTask">удалить</v-btn>
+    </v-card-actions>
+  </v-card>
+</template>
