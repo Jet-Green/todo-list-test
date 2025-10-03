@@ -1,42 +1,51 @@
 <script setup lang="ts">
-import type { Task } from '~/types/task.interface';
-/*
-id: Date.now()
-title: string
-notes: string
-*/
-let tasks = ref<Task[]>([
-  {
-    id: 123771,
-    title: "Помыть кошку",
-    notes: "Не забыть постричь ей ногти",
-  },
-  {
-    id: 123123,
-    title: "Помыть собаку",
-    notes: "Не забыть постричь ей ногти",
-  },
-  {
-    id: 345344,
-    title: "Помыть пол",
-    notes: "С моющим средством",
-  },
-])
+const taskStore = useTask()
+const router = useRouter()
+
+let tasks = taskStore.tasks
+
+let form = ref({
+  title: "",
+  notes: ""
+})
 
 function deleteTask(id: number) {
-  console.log(id);
+  taskStore.deleteTask(id)
+}
 
-  for (let i = 0; i < tasks.value.length; i++) {
-    if (tasks.value[i]?.id == id) {
-      tasks.value.splice(i, 1)
-      break;
-    }
+function clearForm() {
+  form.value.title = ""
+  form.value.notes = ""
+}
+
+function addTask() {
+  let toSend = {
+    title: form.value.title,
+    notes: form.value.notes,
+    id: Date.now()
   }
+
+  taskStore.addTask(toSend)
+
+  clearForm()
 }
 </script>
 <template>
   <v-container>
     <v-row>
+      <v-col cols="12">
+        <v-btn @click="router.push('/')">назад</v-btn>
+      </v-col>
+
+      <v-col cols="12">
+        <v-text-field v-model="form.title" label="Название задачи" variant="outlined"></v-text-field>
+        <v-textarea v-model="form.notes" label="Заметки к задаче" variant="outlined"></v-textarea>
+
+        <v-btn @click="addTask">добавить</v-btn>
+      </v-col>
+
+      {{ form }}
+
       <v-col cols="4" v-for="task of tasks" :key="task.id">
         <TaskCard :task="task" @delete-task="deleteTask" />
       </v-col>
