@@ -1,23 +1,7 @@
 import type { Task } from "~/types/task.interface"
 
 export function useTask() {
-  let tasks = useState<Task[]>(() => [
-    {
-      id: 123771,
-      title: "Помыть кошку",
-      notes: "Не забыть постричь ей ногти",
-    },
-    {
-      id: 123123,
-      title: "Помыть собаку",
-      notes: "Не забыть постричь ей ногти",
-    },
-    {
-      id: 345344,
-      title: "Помыть пол",
-      notes: "С моющим средством",
-    },
-  ])
+  let tasks = useState<Task[]>(() => [])
 
 
   function addTask(task: Task) {
@@ -33,10 +17,20 @@ export function useTask() {
     }
   }
 
+  async function getAllTasks() {
+    try {
+      let response = await $fetch<Task[]>("http://localhost:5000/tasks/get-all", { method: "GET" })
+
+      tasks.value = response
+    } catch (error) {
+      console.log("useTask/getAllTasks error", error);
+    }
+  }
+
   return {
     // variables
     tasks,
     // functions
-    addTask, deleteTask,
+    addTask, deleteTask, getAllTasks,
   }
 }

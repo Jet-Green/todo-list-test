@@ -29,6 +29,8 @@ function addTask() {
 
   clearForm()
 }
+
+await taskStore.getAllTasks();
 </script>
 <template>
   <v-container>
