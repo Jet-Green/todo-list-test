@@ -2,15 +2,20 @@
 const taskStore = useTask()
 const router = useRouter()
 
-let tasks = taskStore.tasks
+let { tasks, editTaskDialog, currentTaskToEdit } = taskStore
+
+
 
 let form = ref({
   title: "",
   notes: ""
 })
 
-function deleteTask(id: number) {
-  taskStore.deleteTask(id)
+function deleteTask(_id: string) {
+  taskStore.deleteTask(_id)
+}
+function editTask(_id: string) {
+  taskStore.openEditDialog(_id)
 }
 
 function clearForm() {
@@ -18,14 +23,13 @@ function clearForm() {
   form.value.notes = ""
 }
 
-function addTask() {
+async function addTask() {
   let toSend = {
     title: form.value.title,
     notes: form.value.notes,
-    id: Date.now()
   }
 
-  taskStore.addTask(toSend)
+  let res = await taskStore.addTask(toSend.title, toSend.notes)
 
   clearForm()
 }
@@ -48,9 +52,18 @@ await taskStore.getAllTasks();
 
       {{ form }}
 
-      <v-col cols="4" v-for="task of tasks" :key="task.id">
-        <TaskCard :task="task" @delete-task="deleteTask" />
+      <v-col cols="4" v-for="task of tasks" :key="task._id">
+        <TaskCard :task="task" @delete-task="deleteTask" @edit-task="editTask" />
       </v-col>
     </v-row>
+
+    <v-dialog v-model="editTaskDialog">
+      <v-card v-if="currentTaskToEdit">
+        <v-text-field v-model="currentTaskToEdit.title" label="Название задачи" variant="outlined"></v-text-field>
+        <v-textarea v-model="currentTaskToEdit.notes" label="Заметки к задаче" variant="outlined"></v-textarea>
+
+        <v-btn @click="">отправить</v-btn>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>

@@ -3,17 +3,25 @@ import type { Task } from "~/types/task.interface"
 export function useTask() {
   let tasks = useState<Task[]>(() => [])
 
+  let currentTaskToEdit = useState<Task | undefined>()
+  let editTaskDialog = useState<boolean>(() => false)
 
-  function addTask(task: Task) {
-    tasks.value.push(task)
-  }
-
-  function deleteTask(id: number) {
-    for (let i = 0; i < tasks.value.length; i++) {
-      if (tasks.value[i]?.id == id) {
-        tasks.value.splice(i, 1)
-        break;
+  async function deleteTask(_id: string) {
+    try {
+      let res = await $fetch<Boolean>("http://localhost:5000/tasks/delete-task", {
+        method: "POST",
+        body: { _id }
+      })
+      if (res) {
+        for (let i = 0; i < tasks.value.length; i++) {
+          if (tasks.value[i]?._id == _id) {
+            tasks.value.splice(i, 1)
+            break;
+          }
+        }
       }
+    } catch (error) {
+      console.log("useTask/addTask error", error)
     }
   }
 
@@ -27,10 +35,35 @@ export function useTask() {
     }
   }
 
+  async function addTask(title: string, notes: string) {
+    try {
+      let res = await $fetch<Task>("http://localhost:5000/tasks/add-task", {
+        method: "POST",
+        body: { "title": title, "notes": notes }
+      })
+
+      if (res._id) {
+        tasks.value.push(res)
+      }
+    } catch (error) {
+      console.log("useTask/addTask error", error)
+    }
+  }
+
+  function openEditDialog(_id: string) {
+    for (let i = 0; i < tasks.value.length; i++) {
+      if (tasks.value[i]?._id == _id) {
+        currentTaskToEdit.value = tasks.value[i];
+        editTaskDialog.value = true;
+        return;
+      }
+    }
+  }
+
   return {
     // variables
-    tasks,
+    tasks, currentTaskToEdit, editTaskDialog,
     // functions
-    addTask, deleteTask, getAllTasks,
+    addTask, deleteTask, getAllTasks, openEditDialog
   }
 }

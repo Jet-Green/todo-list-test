@@ -6,14 +6,17 @@ const props = defineProps<{
   task: Task
 }>()
 
-const emit = defineEmits(["delete-task"])
+const emit = defineEmits(["delete-task", "edit-task"])
 
 let task = props.task;
 
 function deleteTask() {
-  emit("delete-task", task.id)
+  emit("delete-task", task._id)
 }
 
+function editTask() {
+  emit("edit-task", task._id)
+}
 </script>
 <template>
   <v-card variant="tonal">
@@ -26,6 +29,7 @@ function deleteTask() {
 
     <v-card-actions>
       <v-btn @click="deleteTask">удалить</v-btn>
+      <v-btn @click="editTask" color="info">изменить</v-btn>
     </v-card-actions>
   </v-card>
 </template>
