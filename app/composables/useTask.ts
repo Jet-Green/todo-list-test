@@ -60,10 +60,38 @@ export function useTask() {
     }
   }
 
+  async function editTask() {
+    try {
+      if (!currentTaskToEdit.value) {
+        return;
+      }
+
+      let res = await $fetch<Task>("http://localhost:5000/tasks/edit-task", {
+        method: "POST",
+        body: currentTaskToEdit.value
+        /*
+        {_id
+        title
+        notes}
+        */
+      })
+
+      if (res._id) {
+        for (let i = 0; i < tasks.value.length; i++) {
+          if (tasks.value[i]?._id == res._id) {
+            tasks.value[i] = res
+          }
+        }
+      }
+    } catch (error) {
+      console.log("useTask/editTask error", error)
+    }
+  }
+
   return {
     // variables
     tasks, currentTaskToEdit, editTaskDialog,
     // functions
-    addTask, deleteTask, getAllTasks, openEditDialog
+    addTask, deleteTask, getAllTasks, openEditDialog, editTask
   }
 }

@@ -23,6 +23,17 @@ function clearForm() {
   form.value.notes = ""
 }
 
+let loading = ref<boolean>(false)
+
+async function submitEdit() {
+  loading.value = true
+
+  await taskStore.editTask()
+
+  editTaskDialog.value = false;
+  loading.value = false;
+}
+
 async function addTask() {
   let toSend = {
     title: form.value.title,
@@ -40,7 +51,7 @@ await taskStore.getAllTasks();
   <v-container>
     <v-row>
       <v-col cols="12">
-        <v-btn @click="router.push('/')">назад</v-btn>
+        <v-btn @click="router.push('/')" prepend-icon="mdi-chevron-left">назад</v-btn>
       </v-col>
 
       <v-col cols="12">
@@ -48,21 +59,24 @@ await taskStore.getAllTasks();
         <v-textarea v-model="form.notes" label="Заметки к задаче" variant="outlined"></v-textarea>
 
         <v-btn @click="addTask">добавить</v-btn>
+
       </v-col>
 
-      {{ form }}
-
-      <v-col cols="4" v-for="task of tasks" :key="task._id">
+      <v-col cols="12" md="6" lg="4" v-for="task of tasks" :key="task._id">
         <TaskCard :task="task" @delete-task="deleteTask" @edit-task="editTask" />
       </v-col>
     </v-row>
 
     <v-dialog v-model="editTaskDialog">
       <v-card v-if="currentTaskToEdit">
-        <v-text-field v-model="currentTaskToEdit.title" label="Название задачи" variant="outlined"></v-text-field>
-        <v-textarea v-model="currentTaskToEdit.notes" label="Заметки к задаче" variant="outlined"></v-textarea>
+        <v-card-text>
+          <v-text-field v-model="currentTaskToEdit.title" label="Название задачи" variant="outlined"></v-text-field>
+          <v-textarea v-model="currentTaskToEdit.notes" label="Заметки к задаче" variant="outlined"></v-textarea>
+        </v-card-text>
 
-        <v-btn @click="">отправить</v-btn>
+        <v-card-actions>
+          <v-btn @click="submitEdit" :loading="loading">отправить</v-btn>
+        </v-card-actions>
       </v-card>
     </v-dialog>
   </v-container>

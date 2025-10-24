@@ -23,10 +23,10 @@ function editTask() {
     <v-card-title>
       {{ task.title }}
     </v-card-title>
+
     <v-card-text>
       {{ task.notes }}
     </v-card-text>
-
     <v-card-actions>
       <v-btn @click="deleteTask">удалить</v-btn>
       <v-btn @click="editTask" color="info">изменить</v-btn>
