@@ -4,6 +4,8 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: ['vuetify-nuxt-module'],
   runtimeConfig: {
-    apiUrl: process.env.API_URL
+    public: {
+      apiUrl: process.env.NUXT_PUBLIC_API_URL
+    }
   }
 })
