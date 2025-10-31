@@ -8,7 +8,9 @@ export function useTask() {
 
   async function deleteTask(_id: string) {
     try {
-      let res = await $fetch<Boolean>("http://localhost:5000/tasks/delete-task", {
+      const config = useRuntimeConfig()
+
+      let res = await $fetch<Boolean>(config.apiUrl + "tasks/delete-task", {
         method: "POST",
         body: { _id }
       })
@@ -27,7 +29,9 @@ export function useTask() {
 
   async function getAllTasks() {
     try {
-      let response = await $fetch<Task[]>("http://localhost:5000/tasks/get-all", { method: "GET" })
+      const config = useRuntimeConfig()
+
+      let response = await $fetch<Task[]>(config.apiUrl + "tasks/get-all", { method: "GET" })
 
       tasks.value = response
     } catch (error) {
@@ -37,7 +41,9 @@ export function useTask() {
 
   async function addTask(title: string, notes: string) {
     try {
-      let res = await $fetch<Task>("http://localhost:5000/tasks/add-task", {
+      const config = useRuntimeConfig()
+
+      let res = await $fetch<Task>(config.apiUrl + "tasks/add-task", {
         method: "POST",
         body: { "title": title, "notes": notes }
       })
@@ -66,7 +72,9 @@ export function useTask() {
         return;
       }
 
-      let res = await $fetch<Task>("http://localhost:5000/tasks/edit-task", {
+      const config = useRuntimeConfig()
+
+      let res = await $fetch<Task>(config.apiUrl + "tasks/edit-task", {
         method: "POST",
         body: currentTaskToEdit.value
         /*

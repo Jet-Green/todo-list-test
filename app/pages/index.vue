@@ -1,5 +1,7 @@
 <script setup lang="ts">
-let response = await $fetch("http://localhost:5000/", {
+const config = useRuntimeConfig()
+
+let response = await $fetch(config.apiUrl, {
   method: "get"
 })
 const routes = [
