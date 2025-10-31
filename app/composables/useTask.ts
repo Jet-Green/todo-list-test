@@ -10,7 +10,7 @@ export function useTask() {
     try {
       const config = useRuntimeConfig()
 
-      let res = await $fetch<Boolean>(config.apiUrl + "tasks/delete-task", {
+      let res = await $fetch<Boolean>(config.public.apiUrl + "tasks/delete-task", {
         method: "POST",
         body: { _id }
       })
@@ -31,7 +31,7 @@ export function useTask() {
     try {
       const config = useRuntimeConfig()
 
-      let response = await $fetch<Task[]>(config.apiUrl + "tasks/get-all", { method: "GET" })
+      let response = await $fetch<Task[]>(config.public.apiUrl + "tasks/get-all", { method: "GET" })
 
       tasks.value = response
     } catch (error) {
@@ -43,7 +43,7 @@ export function useTask() {
     try {
       const config = useRuntimeConfig()
 
-      let res = await $fetch<Task>(config.apiUrl + "tasks/add-task", {
+      let res = await $fetch<Task>(config.public.apiUrl + "tasks/add-task", {
         method: "POST",
         body: { "title": title, "notes": notes }
       })
@@ -74,7 +74,7 @@ export function useTask() {
 
       const config = useRuntimeConfig()
 
-      let res = await $fetch<Task>(config.apiUrl + "tasks/edit-task", {
+      let res = await $fetch<Task>(config.public.apiUrl + "tasks/edit-task", {
         method: "POST",
         body: currentTaskToEdit.value
         /*

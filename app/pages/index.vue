@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const config = useRuntimeConfig()
 
-let response = await $fetch(config.apiUrl, {
+let response = await $fetch(config.public.apiUrl, {
   method: "get"
 })
 const routes = [
