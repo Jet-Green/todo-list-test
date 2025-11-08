@@ -17,6 +17,16 @@ function deleteTask() {
 function editTask() {
   emit("edit-task", task._id)
 }
+
+function formatDate(dateString: string | undefined): string {
+  if (!dateString) return 'Дата не указана';
+  return new Date(dateString).toLocaleString('ru-RU', {
+    day: '2-digit',
+    month: '2-digit',
+    hour: "numeric",
+    minute: "numeric",
+  });
+}
 </script>
 <template>
   <v-card variant="tonal">
@@ -26,6 +36,7 @@ function editTask() {
 
     <v-card-text>
       {{ task.notes }}
+      {{ formatDate(task.deadline) }}
     </v-card-text>
     <v-card-actions>
       <v-btn @click="deleteTask">удалить</v-btn>

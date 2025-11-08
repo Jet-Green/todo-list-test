@@ -11,6 +11,9 @@ let form = ref({
   notes: ""
 })
 
+let date = ref()
+let time = ref()
+
 function deleteTask(_id: string) {
   taskStore.deleteTask(_id)
 }
@@ -35,12 +38,26 @@ async function submitEdit() {
 }
 
 async function addTask() {
+  if (!date.value || !time.value) {
+    alert("Введите дату и время")
+    return;
+  }
+
+  let dateObj = new Date(date.value)
+
+  // 11:55
+  let [hours, minutes] = time.value.split(":")
+
+  dateObj.setHours(hours)
+  dateObj.setMinutes(minutes)
+
   let toSend = {
     title: form.value.title,
     notes: form.value.notes,
+    deadline: dateObj.toISOString()
   }
 
-  let res = await taskStore.addTask(toSend.title, toSend.notes)
+  let res = await taskStore.addTask(toSend.title, toSend.notes, toSend.deadline)
 
   clearForm()
 }
@@ -57,6 +74,15 @@ await taskStore.getAllTasks();
       <v-col cols="12">
         <v-text-field v-model="form.title" label="Название задачи" variant="outlined"></v-text-field>
         <v-textarea v-model="form.notes" label="Заметки к задаче" variant="outlined"></v-textarea>
+
+        <v-row>
+          <v-col cols="6">
+            <v-date-picker height="300px" v-model="date"></v-date-picker>
+          </v-col>
+          <v-col cols="6">
+            <v-time-picker v-model="time"></v-time-picker>
+          </v-col>
+        </v-row>
 
         <v-btn @click="addTask">добавить</v-btn>
 

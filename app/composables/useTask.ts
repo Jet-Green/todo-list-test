@@ -39,13 +39,13 @@ export function useTask() {
     }
   }
 
-  async function addTask(title: string, notes: string) {
+  async function addTask(title: string, notes: string, deadline: string) {
     try {
       const config = useRuntimeConfig()
 
       let res = await $fetch<Task>(config.public.apiUrl + "tasks/add-task", {
         method: "POST",
-        body: { "title": title, "notes": notes }
+        body: { title, notes, deadline }
       })
 
       if (res._id) {
