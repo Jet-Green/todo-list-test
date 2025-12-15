@@ -1,9 +1,6 @@
 <script setup lang="ts">
 const config = useRuntimeConfig()
 
-let response = await $fetch(config.public.apiUrl, {
-  method: "get"
-})
 const routes = [
   {
     title: "Мои задачи",
@@ -12,7 +9,6 @@ const routes = [
     path: "/tasks"
   },
 ]
-console.log(response);
 </script>
 <template>
   <v-container class="fill-height">
